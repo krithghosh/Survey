@@ -1,22 +1,26 @@
-var express = require('express');
-var mongoose = require('mongoose');
-var cors = require('cors');
-var morgan = require('morgan');
-var cookieParser = require('cookie-parser');
-var bodyParser = require('body-parser');
-var port = process.env.PORT || 5000;
+const express = require('express');
+const passport = require('passport');
+const mongoose = require('mongoose');
+const cors = require('cors');
+const morgan = require('morgan');
+const cookieParser = require('cookie-parser');
+const bodyParser = require('body-parser');
+const googleStrategy = require('passport-google-oauth20').Strategy;
+const port = process.env.PORT || 5000;
+const publicDir = require('path').join(__dirname,'/public');
+const viewDir = __dirname + '/views';
 require('./config/database.js');
 
 var app = express();
 
-var publicDir = require('path').join(__dirname,'/public');
+passport.use(new googleStrategy());
 app.use(cors())
 app.options('*', cors())
 app.use(morgan('dev'));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(cookieParser());
-app.set('views', __dirname + '/views');
+app.set('views', viewDir);
 app.set('view engine', 'ejs');
 app.use(express.static(publicDir));
 
