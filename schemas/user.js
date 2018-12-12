@@ -8,7 +8,34 @@ const User = mongoose.model('User',
 	}, {_id: true})
 );
 
-module.exports = {
+const useCases = {
+	userExists: async (google_id, name, done) => {
+		const existingUser = await useCases.findUser(google_id);
+		if(existingUser.data) {
+			console.log('Existing user');
+			done(null, existingUser.data);
+			return;
+		}
+		const addedUser = await useCases.addUser(google_id, name);
+		if(addedUser.data){
+			console.log('New user');
+			done(null, addedUser.data);
+		}
+	},
+
+	userById: async (id, done) => {
+		const user = await useCases.getUserById(id);
+		if(user.data) {
+			done(null, user.data);
+		}
+	},
+
+	getUserById: async (id) => {
+		return await User.findById(id)
+				.then(data => ({'data': data, 'error': null}))
+				.catch(error => ({'data': null, 'error': error.message}));
+	},
+
 	findUser: async (google_id) => {
 		return await User.findOne({google_id: google_id})
 				.then(data => ({'data': data, 'error': null}))
@@ -20,3 +47,5 @@ module.exports = {
 				.catch(error => ({'data': null, 'error': error.message}));
 	}
 }
+
+module.exports = useCases;
