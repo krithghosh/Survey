@@ -12,13 +12,10 @@ const useCases = {
 	userExists: async (google_id, name, done) => {
 		const existingUser = await useCases.findUser(google_id);
 		if(existingUser.data) {
-			console.log('Existing user');
-			done(null, existingUser.data);
-			return;
+			return done(null, existingUser.data);
 		}
 		const addedUser = await useCases.addUser(google_id, name);
 		if(addedUser.data){
-			console.log('New user');
 			done(null, addedUser.data);
 		}
 	},
