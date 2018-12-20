@@ -36,6 +36,16 @@ app.use(function(req, res, next) {
 });
 
 require('./routes/auth')(app);
+require('./routes/user')(app);
+
+if(process.env.NODE_ENV === 'production') {
+  app.use(express.static('client/build'));
+
+  // If theres no matching routes
+  app.get('*', (req, res) => {
+    res.sendFile(require('path').resolve(__dirname, 'client', 'build', 'index.html'));
+  });
+}
 
 app.use(function(req, res, next) {
   var err = new Error('Not Found');

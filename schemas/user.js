@@ -4,7 +4,8 @@ const { Schema } = mongoose
 const User = mongoose.model('User', 
 	new Schema({
 	    google_id: {type: String, required: true, unique: true},
-	    name: {type: String, required: true}
+	    name: {type: String, required: true},
+	    credits: {type: Number, default: 0}
 	}, {_id: true})
 );
 
@@ -38,10 +39,15 @@ const useCases = {
 				.then(data => ({'data': data, 'error': null}))
 				.catch(error => ({'data': null, 'error': error.message}));
 	},
+
 	addUser: async (google_id, name) => {
 		return await User.create({google_id: google_id, name: name})
 				.then(data => ({'data': data, 'error': null}))
 				.catch(error => ({'data': null, 'error': error.message}));
+	},
+
+	updateCredit: async (user) => {
+		return await user.save();
 	}
 }
 
